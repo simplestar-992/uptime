@@ -1,0 +1,29 @@
+#!/bin/bash
+# Uptime - System uptime with pretty formatting
+# Show how long the system has been running
+
+uptime_info=$(cat /proc/uptime)
+uptime_secs=$(echo "$uptime_info" | awk '{print $1}')
+uptime_secs=${uptime_secs%.*}
+
+days=$((uptime_secs / 86400))
+hours=$(( (uptime_secs % 86400) / 3600 ))
+mins=$(( (uptime_secs % 3600) / 60 ))
+
+echo "🕐 System Uptime"
+echo "================="
+echo ""
+
+if [[ $days -gt 0 ]]; then
+    echo "   $days days, $hours hours, $mins minutes"
+else
+    echo "   $hours hours, $mins minutes"
+fi
+
+echo ""
+echo "Load average: $(cat /proc/loadavg)"
+
+# Boot time
+boot_time=$(date -d "@$(( $(cat /proc/stat | grep btime | awk '{print $2}') ))" 2>/dev/null || echo "unknown")
+echo "Booted: $boot_time"
+EOF
